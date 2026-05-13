@@ -3,7 +3,8 @@ node_modules/
 backoffice/node_modules/
 whatsapp/node_modules/
 
-# Build outputs (assembled by CI)
+# Build outputs (assembled by CI — never commit)
+dist/
 backoffice/dist/
 whatsapp/dist/
 
