@@ -15,7 +15,11 @@ export function App() {
   return (
     <HashRouter>
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#1a1a2e' }}>
-        <nav style={{ background: '#0F0F0F', borderBottom: '1px solid #222', padding: '10px 24px', display: 'flex', gap: 8, flexShrink: 0, flexWrap: 'wrap' }}>
+        <nav style={{ background: '#0F0F0F', borderBottom: '1px solid #222', padding: '10px 24px', display: 'flex', gap: 8, flexShrink: 0, flexWrap: 'wrap', alignItems: 'center' }}>
+          <a href="/LIA-prototypes/" style={{ color: 'rgba(255,255,255,0.35)', fontSize: 12, fontWeight: 500, textDecoration: 'none', padding: '5px 10px', borderRadius: 6, whiteSpace: 'nowrap', marginRight: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
+            ← Home
+          </a>
+          <div style={{ width: 1, height: 16, background: 'rgba(255,255,255,0.1)', marginRight: 4 }} />
           {navLinks.map(l => (
             <NavLink key={l.to} to={l.to} style={({ isActive }) => ({
               color: isActive ? '#5E6AD2' : 'rgba(255,255,255,0.5)',

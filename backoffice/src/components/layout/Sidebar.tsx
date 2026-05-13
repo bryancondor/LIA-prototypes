@@ -29,6 +29,12 @@ export function Sidebar() {
         <SectionLabel className="mt-2">Management</SectionLabel>
         {managementNav.map(item => <SidebarNavItem key={item.to} {...item} />)}
       </nav>
+      <div className="p-2 border-t border-border-subtle">
+        <a href="/LIA-prototypes/" className="flex items-center gap-[9px] px-[10px] py-[7px] rounded-[6px] text-[12px] text-text-muted hover:bg-surface-subtle hover:text-text-secondary transition-colors no-underline">
+          <span className="text-[14px] w-[18px] text-center">←</span>
+          <span>Back to Home</span>
+        </a>
+      </div>
       <div className="p-2">
         <div className="p-[10px] border-t border-border-subtle flex items-center gap-[9px] cursor-pointer rounded-[6px] hover:bg-surface-muted transition-colors">
           <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-[#7C85E0] flex items-center justify-center text-white text-[11px] font-semibold flex-shrink-0">DR</div>
