@@ -5,6 +5,8 @@ import { Escalations }   from './pages/Escalations'
 import { Consultations } from './pages/Consultations'
 import { Patients }      from './pages/Patients'
 import { Onboarding }    from './pages/Onboarding'
+import { Reports }       from './pages/Reports'
+import { Settings }      from './pages/Settings'
 
 export function App() {
   return (
@@ -17,6 +19,8 @@ export function App() {
         <Route path="/consultations" element={<Consultations />} />
         <Route path="/patients"      element={<Patients />} />
         <Route path="/onboarding"    element={<Onboarding />} />
+        <Route path="/reports"       element={<Reports />} />
+        <Route path="/settings"      element={<Settings />} />
       </Routes>
     </HashRouter>
   )
