@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIA Backoffice</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif; background: #F7F7F8; color: #1A1A1A; font-size: 13px; display: flex; height: 100vh; overflow: hidden; }
+
+  .sidebar { width: 228px; background: white; border-right: 1px solid #E8E8EA; display: flex; flex-direction: column; flex-shrink: 0; }
+  .sidebar-logo { padding: 18px 16px 14px; display: flex; align-items: center; gap: 9px; border-bottom: 1px solid #F0F0F2; }
+  .logo-icon { width: 26px; height: 26px; background: linear-gradient(135deg, #5E6AD2, #7C85E0); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 13px; box-shadow: 0 2px 6px rgba(94,106,210,.35); }
+  .logo-name { font-weight: 650; font-size: 14px; color: #111; letter-spacing: -.2px; }
+  .logo-env { margin-left: auto; font-size: 10px; color: #B0B0B8; background: #F4F4F6; padding: 2px 7px; border-radius: 9px; }
+  .sidebar-section { padding: 8px 8px 4px; font-size: 10px; font-weight: 600; color: #C0C0C8; text-transform: uppercase; letter-spacing: .7px; margin-top: 4px; }
+  .nav-item { display: flex; align-items: center; gap: 9px; padding: 7px 10px; border-radius: 6px; cursor: pointer; color: #6C6C78; font-size: 12.5px; font-weight: 450; transition: background .1s; }
+  .nav-item:hover { background: #F5F5F7; color: #1A1A1A; }
+  .nav-item.active { background: #EFEFFF; color: #5E6AD2; font-weight: 550; }
+  .nav-item .icon { font-size: 14px; width: 18px; text-align: center; }
+  .nav-badge { margin-left: auto; background: #EF4444; color: white; font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 9px; }
+  .nav-badge.warn { background: #F59E0B; }
+  .avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg,#5E6AD2,#7C85E0); display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: 600; flex-shrink: 0; }
+  .avatar-name { font-size: 12px; font-weight: 550; color: #1A1A1A; }
+  .avatar-role { font-size: 10px; color: #A0A0A8; }
+
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .topbar { background: white; border-bottom: 1px solid #E8E8EA; padding: 0 24px; height: 52px; display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+  .breadcrumb { font-size: 11.5px; color: #A0A0A8; display: flex; align-items: center; gap: 5px; }
+  .breadcrumb strong { color: #1A1A1A; font-weight: 550; }
+  .search-bar { margin-left: auto; display: flex; align-items: center; gap: 8px; background: #F4F4F6; border: 1px solid #E8E8EA; border-radius: 7px; padding: 5px 11px; width: 200px; }
+  .search-bar input { border: none; background: transparent; font-size: 12px; color: #5C5C68; outline: none; width: 100%; }
+  .btn-primary { background: #5E6AD2; color: white; border: none; border-radius: 6px; padding: 7px 13px; font-size: 12px; font-weight: 550; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 5px; }
+
+  .content { flex: 1; padding: 20px 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .kpi-card { background: white; border: 1px solid #E8E8EA; border-radius: 9px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; transition: box-shadow .15s; }
+  .kpi-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+  .kpi-label { font-size: 11px; font-weight: 550; color: #A0A0A8; text-transform: uppercase; letter-spacing: .4px; }
+  .kpi-value { font-size: 26px; font-weight: 720; color: #1A1A1A; letter-spacing: -1px; line-height: 1; }
+  .kpi-value span { font-size: 14px; font-weight: 450; color: #B0B0B8; }
+  .kpi-sub { font-size: 11px; color: #A0A0A8; display: flex; align-items: center; gap: 4px; }
+  .kpi-sub .up { color: #22C55E; font-weight: 550; }
+  .kpi-sub .warn { color: #F59E0B; font-weight: 550; }
+  .kpi-sub .danger { color: #EF4444; font-weight: 550; }
+  .kpi-bar { height: 3px; background: #F0F0F2; border-radius: 9px; margin-top: 4px; overflow: hidden; }
+  .kpi-bar-fill { height: 100%; border-radius: 9px; }
+
+  .section-title { font-size: 13px; font-weight: 600; color: #1A1A1A; }
+  .section-sub { font-size: 11.5px; color: #A0A0A8; }
+
+  .tabs { display: flex; gap: 2px; background: #F4F4F6; border-radius: 7px; padding: 3px; width: fit-content; }
+  .tab { padding: 5px 12px; border-radius: 5px; font-size: 11.5px; font-weight: 500; color: #6C6C78; cursor: pointer; white-space: nowrap; }
+  .tab.active { background: white; color: #1A1A1A; font-weight: 600; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+
+  .table-wrap { background: white; border: 1px solid #E8E8EA; border-radius: 9px; overflow: hidden; }
+  .table-inner { width: 100%; border-collapse: collapse; }
+  .table-inner thead tr { background: #FAFAFA; border-bottom: 1px solid #EFEFEF; }
+  .table-inner th { padding: 9px 16px; text-align: left; font-size: 10.5px; font-weight: 650; color: #A0A0A8; text-transform: uppercase; letter-spacing: .5px; white-space: nowrap; }
+  .table-inner tbody tr { border-bottom: 1px solid #F5F5F7; transition: background .1s; cursor: pointer; }
+  .table-inner tbody tr:last-child { border-bottom: none; }
+  .table-inner tbody tr:hover { background: #FAFAFA; }
+  .table-inner tbody tr.row-warn { background: #FFFDF0; }
+  .table-inner tbody tr.row-warn:hover { background: #FFF9E0; }
+  .table-inner tbody tr.row-danger { background: #FFF8F8; }
+  .table-inner tbody tr.row-danger:hover { background: #FFF0F0; }
+  .table-inner td { padding: 11px 16px; font-size: 12.5px; color: #3C3C48; vertical-align: middle; }
+
+  .patient-cell { display: flex; align-items: center; gap: 10px; }
+  .pat-avatar { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 650; flex-shrink: 0; }
+  .pat-name { font-weight: 550; color: #1A1A1A; font-size: 12.5px; }
+  .pat-dx { font-size: 10.5px; color: #A0A0A8; margin-top: 1px; }
+
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 9px; font-size: 11px; font-weight: 550; white-space: nowrap; }
+  .badge-green { background: #DCFCE7; color: #15803D; }
+  .badge-yellow { background: #FEF9C3; color: #A16207; }
+  .badge-red { background: #FEE2E2; color: #B91C1C; }
+  .badge-gray { background: #F4F4F6; color: #6C6C78; }
+
+  .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .dot-green { background: #22C55E; }
+  .dot-yellow { background: #F59E0B; }
+  .dot-red { background: #EF4444; }
+
+  .row-actions { display: flex; gap: 6px; opacity: 0; transition: opacity .1s; }
+  tr:hover .row-actions { opacity: 1; }
+  .btn-sm { background: #F4F4F6; border: 1px solid #E8E8EA; border-radius: 5px; padding: 4px 9px; font-size: 11px; color: #5C5C68; cursor: pointer; font-weight: 500; white-space: nowrap; }
+  .btn-sm.primary { background: #EEF0FD; border-color: #C7CAF5; color: #5E6AD2; }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">L</div>
+    <span class="logo-name">LIA</span>
+    <span class="logo-env">Production</span>
+  </div>
+  <div style="padding:8px;flex:1;display:flex;flex-direction:column;gap:1px;overflow-y:auto;">
+    <div class="sidebar-section">Monitoring</div>
+    <div class="nav-item active"><span class="icon">💊</span> Adherence</div>
+    <div class="nav-item"><span class="icon">🌡️</span> Symptoms</div>
+    <div class="nav-item"><span class="icon">⚠️</span> Escalations <span class="nav-badge">1</span></div>
+    <div class="nav-item"><span class="icon">💬</span> Consultations <span class="nav-badge warn">3</span></div>
+    <div class="sidebar-section" style="margin-top:8px;">Management</div>
+    <div class="nav-item"><span class="icon">👥</span> Patients</div>
+    <div class="nav-item"><span class="icon">🏥</span> Onboarding</div>
+    <div class="nav-item"><span class="icon">📊</span> Reports</div>
+    <div class="nav-item"><span class="icon">⚙️</span> Settings</div>
+  </div>
+  <div style="padding:8px;">
+    <div style="padding:10px;border-top:1px solid #F0F0F2;display:flex;align-items:center;gap:9px;cursor:pointer;border-radius:6px;">
+      <div class="avatar">DR</div>
+      <div style="flex:1;">
+        <div class="avatar-name">Dr. Ramirez</div>
+        <div class="avatar-role">LIA Doctor</div>
+      </div>
+      <span style="color:#C0C0C8;font-size:12px;">⋯</span>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <div class="breadcrumb">Monitoring <span>›</span> <strong>Adherence</strong></div>
+    <div style="width:1px;height:16px;background:#E8E8EA;"></div>
+    <span style="font-size:11.5px;color:#A0A0A8;">SP2a — Medication Reminder</span>
+    <div class="search-bar">
+      <span style="color:#C0C0C8;font-size:12px;">🔍</span>
+      <input type="text" placeholder="Search patient…">
+    </div>
+    <button class="btn-primary">＋ Add reminder</button>
+  </div>
+
+  <div class="content">
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Adherence today</div>
+        <div class="kpi-value">87<span>%</span></div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:87%;background:#22C55E;"></div></div>
+        <div class="kpi-sub"><span class="up">↑ +3%</span> vs yesterday</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Confirmed</div>
+        <div class="kpi-value">11<span>/14</span></div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:78%;background:#5E6AD2;"></div></div>
+        <div class="kpi-sub">next reminder <strong style="color:#1A1A1A;">08:00 PM</strong></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">No response</div>
+        <div class="kpi-value" style="color:#F59E0B;">2</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:14%;background:#F59E0B;"></div></div>
+        <div class="kpi-sub"><span class="warn">⚠</span> Mild alert — review</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Not taken</div>
+        <div class="kpi-value" style="color:#EF4444;">1</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:7%;background:#EF4444;"></div></div>
+        <div class="kpi-sub"><span class="danger">● Requires</span> action today</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="table-wrap">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;border-bottom:1px solid #EBEBEB;background:white;">
+          <div>
+            <div class="section-title">Today's reminders</div>
+            <div class="section-sub" style="margin-top:3px;">May 11, 2026 · 14 active patients</div>
+          </div>
+          <div class="tabs">
+            <div class="tab active">All <span style="color:#A0A0A8;font-weight:400;">14</span></div>
+            <div class="tab">✓ Taken <span style="color:#A0A0A8;font-weight:400;">11</span></div>
+            <div class="tab">⚠ No resp. <span style="color:#A0A0A8;font-weight:400;">2</span></div>
+            <div class="tab">✗ Not taken <span style="color:#A0A0A8;font-weight:400;">1</span></div>
+          </div>
+        </div>
+        <table class="table-inner">
+          <thead>
+            <tr>
+              <th>Patient</th>
+              <th>Medication</th>
+              <th>Dose</th>
+              <th>Sent at</th>
+              <th>Response</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="patient-cell">
+                  <div class="pat-avatar" style="background:#EDEDFF;color:#5E6AD2;">CM</div>
+                  <div><div class="pat-name">Carlos Mendoza</div><div class="pat-dx">Type 2 Diabetes</div></div>
+                </div>
+              </td>
+              <td>Metformin 500mg</td>
+              <td>1 tablet</td>
+              <td style="color:#A0A0A8;">14:00</td>
+              <td style="color:#A0A0A8;">14:03 · <strong style="color:#15803D;">YES</strong></td>
+              <td><span class="badge badge-green"><span class="dot dot-green"></span>Taken</span></td>
+              <td><div class="row-actions"><button class="btn-sm primary">View history</button><button class="btn-sm">Contact</button></div></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="patient-cell">
+                  <div class="pat-avatar" style="background:#EDEDFF;color:#5E6AD2;">MC</div>
+                  <div><div class="pat-name">Mary Castillo</div><div class="pat-dx">Breast cancer · post-op</div></div>
+                </div>
+              </td>
+              <td>Ondansetron 8mg</td>
+              <td>1 tablet</td>
+              <td style="color:#A0A0A8;">08:00</td>
+              <td style="color:#A0A0A8;">08:05 · <strong style="color:#15803D;">YES</strong></td>
+              <td><span class="badge badge-green"><span class="dot dot-green"></span>Taken</span></td>
+              <td><div class="row-actions"><button class="btn-sm primary">View history</button><button class="btn-sm">Contact</button></div></td>
+            </tr>
+            <tr class="row-warn">
+              <td>
+                <div class="patient-cell">
+                  <div class="pat-avatar" style="background:#FEF9C3;color:#A16207;">RP</div>
+                  <div><div class="pat-name">Rose Paredes</div><div class="pat-dx">Colorectal cancer</div></div>
+                </div>
+              </td>
+              <td>Dexamethasone 4mg</td>
+              <td>1 tablet</td>
+              <td style="color:#A0A0A8;">10:00</td>
+              <td style="color:#A0A0A8;">— No response</td>
+              <td><span class="badge badge-yellow"><span class="dot dot-yellow"></span>No response</span></td>
+              <td><div class="row-actions"><button class="btn-sm primary">View history</button><button class="btn-sm">Contact</button></div></td>
+            </tr>
+            <tr class="row-danger">
+              <td>
+                <div class="patient-cell">
+                  <div class="pat-avatar" style="background:#FEE2E2;color:#B91C1C;">JT</div>
+                  <div><div class="pat-name" style="color:#B91C1C;">Jorge Torres</div><div class="pat-dx">Lymphoma · active chemo</div></div>
+                </div>
+              </td>
+              <td>Tramadol 50mg</td>
+              <td>1 capsule</td>
+              <td style="color:#A0A0A8;">08:00</td>
+              <td style="color:#A0A0A8;">08:12 · <strong style="color:#B91C1C;">NO</strong></td>
+              <td><span class="badge badge-red"><span class="dot dot-red"></span>Not taken</span></td>
+              <td><div class="row-actions"><button class="btn-sm primary">View history</button><button class="btn-sm">Contact</button></div></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="patient-cell">
+                  <div class="pat-avatar" style="background:#EDEDFF;color:#5E6AD2;">PV</div>
+                  <div><div class="pat-name">Patricia Vargas</div><div class="pat-dx">Type 2 Diabetes</div></div>
+                </div>
+              </td>
+              <td>Insulin glargine</td>
+              <td>20 IU</td>
+              <td style="color:#A0A0A8;">22:00</td>
+              <td style="color:#A0A0A8;">— Scheduled</td>
+              <td><span class="badge badge-gray">Scheduled</span></td>
+              <td><div class="row-actions"><button class="btn-sm primary">View history</button><button class="btn-sm">Contact</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

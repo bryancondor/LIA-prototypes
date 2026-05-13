@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WhatsApp SP2a — LIA</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#1a1a2e; display:flex; justify-content:center; align-items:center; min-height:100vh; font-family:-apple-system,sans-serif; padding:32px; }
+  .phone { width:375px; height:760px; background:#111; border-radius:48px; padding:12px; box-shadow:0 40px 80px rgba(0,0,0,.7), 0 0 0 1px #333, inset 0 0 0 2px #2a2a2a; flex-shrink:0; }
+  .phone-screen { width:100%; height:100%; border-radius:38px; overflow:hidden; display:flex; flex-direction:column; background:#ECE5DD; }
+  .status-bar { background:#075E54; padding:12px 20px 4px; display:flex; justify-content:space-between; align-items:center; flex-shrink:0; }
+  .status-time { color:white; font-size:12px; font-weight:600; }
+  .status-icons { display:flex; gap:5px; align-items:center; color:white; font-size:10px; }
+  .wa-header { background:#075E54; padding:6px 12px 10px; display:flex; align-items:center; gap:10px; flex-shrink:0; box-shadow:0 1px 3px rgba(0,0,0,.2); }
+  .back-arrow { color:white; font-size:20px; line-height:1; opacity:.9; }
+  .contact-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,#25D366,#128C7E); display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:16px; flex-shrink:0; }
+  .contact-info { flex:1; }
+  .contact-name { color:white; font-size:15px; font-weight:600; line-height:1.2; }
+  .contact-status { color:rgba(255,255,255,.75); font-size:11.5px; margin-top:1px; }
+  .header-icons { display:flex; gap:18px; color:white; font-size:17px; opacity:.9; }
+  .chat-bg { flex:1; overflow-y:auto; padding:10px 12px; display:flex; flex-direction:column; gap:3px; background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+  .date-pill { align-self:center; background:rgba(255,255,255,.85); color:#667781; font-size:11px; padding:4px 10px; border-radius:7px; margin:6px 0; box-shadow:0 1px 1px rgba(0,0,0,.08); }
+  .bubble-wrap { display:flex; flex-direction:column; max-width:78%; }
+  .bubble-wrap.incoming { align-self:flex-start; }
+  .bubble-wrap.outgoing { align-self:flex-end; }
+  .bubble { padding:7px 10px 5px; border-radius:8px; font-size:13.5px; line-height:1.4; position:relative; box-shadow:0 1px 1px rgba(0,0,0,.12); }
+  .bubble.incoming { background:white; border-top-left-radius:2px; color:#111; }
+  .bubble.outgoing { background:#DCF8C6; border-top-right-radius:2px; color:#111; }
+  .bubble strong { font-weight:700; }
+  .bubble-time { font-size:10px; color:#999; text-align:right; margin-top:2px; display:flex; align-items:center; justify-content:flex-end; gap:3px; }
+  .bubble-time.outgoing { color:#6a9f6a; }
+  .tick { font-size:13px; color:#53BDEB; }
+  .quick-replies { display:flex; flex-direction:column; gap:2px; margin-top:2px; align-self:flex-start; width:100%; max-width:78%; }
+  .qr-btn { background:white; border:none; border-radius:8px; padding:9px 14px; font-size:13.5px; color:#0A96ED; font-weight:500; text-align:center; cursor:pointer; box-shadow:0 1px 1px rgba(0,0,0,.1); display:flex; align-items:center; justify-content:center; gap:6px; }
+  .qr-btn.selected { background:#e8f4fd; border:1.5px solid #0A96ED; }
+  .input-bar { background:#F0F2F5; padding:8px 10px; display:flex; align-items:center; gap:8px; flex-shrink:0; }
+  .input-field { flex:1; background:white; border-radius:22px; padding:9px 14px; font-size:13.5px; color:#999; display:flex; align-items:center; gap:8px; }
+  .input-field span { font-size:17px; opacity:.5; }
+  .mic-btn { width:44px; height:44px; border-radius:50%; background:#25D366; display:flex; align-items:center; justify-content:center; color:white; font-size:18px; flex-shrink:0; }
+  .label { color:rgba(255,255,255,.5); font-size:11px; text-align:center; margin-top:10px; letter-spacing:.5px; text-transform:uppercase; }
+  .phones-wrap { display:flex; gap:40px; align-items:flex-start; }
+  .phone-col { display:flex; flex-direction:column; align-items:center; }
+</style>
+</head>
+<body>
+<div class="phones-wrap">
+
+  <!-- PHONE 1: Reminder sent -->
+  <div class="phone-col">
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="status-bar">
+          <span class="status-time">9:58</span>
+          <div class="status-icons"><span>▲▲▲</span><span>WiFi</span><span>🔋</span></div>
+        </div>
+        <div class="wa-header">
+          <span class="back-arrow">‹</span>
+          <div class="contact-avatar">L</div>
+          <div class="contact-info">
+            <div class="contact-name">LIA</div>
+            <div class="contact-status">online</div>
+          </div>
+          <div class="header-icons"><span>📹</span><span>📞</span><span>⋮</span></div>
+        </div>
+        <div class="chat-bg">
+          <div class="date-pill">TODAY</div>
+
+          <div class="bubble-wrap incoming">
+            <div class="bubble incoming">
+              Hi Mariana 😊 I'm LIA — I'll be by your side as you take care of your dad. Anything about his treatment, just ask.
+              <div class="bubble-time">8:00 <span>✓✓</span></div>
+            </div>
+          </div>
+
+          <div style="margin-top:6px;"></div>
+
+          <div class="bubble-wrap incoming">
+            <div class="bubble incoming">
+              Mariana, it's time for your dad's <strong>Metformin 500mg</strong> 💊<br><br>
+              Did he take it?
+              <div class="bubble-time">10:00 <span>✓✓</span></div>
+            </div>
+          </div>
+
+          <div class="quick-replies">
+            <button class="qr-btn">✅ Yes, he took it</button>
+            <button class="qr-btn">❌ No, he didn't</button>
+          </div>
+        </div>
+        <div class="input-bar">
+          <div class="input-field">
+            <span>😊</span>
+            <span style="color:#aaa;font-size:13.5px;">Type a message</span>
+            <span style="margin-left:auto;">📎</span>
+          </div>
+          <div class="mic-btn">🎤</div>
+        </div>
+      </div>
+    </div>
+    <div class="label">1 — Reminder sent</div>
+  </div>
+
+  <!-- PHONE 2: Confirmed -->
+  <div class="phone-col">
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="status-bar">
+          <span class="status-time">10:02</span>
+          <div class="status-icons"><span>▲▲▲</span><span>WiFi</span><span>🔋</span></div>
+        </div>
+        <div class="wa-header">
+          <span class="back-arrow">‹</span>
+          <div class="contact-avatar">L</div>
+          <div class="contact-info">
+            <div class="contact-name">LIA</div>
+            <div class="contact-status">online</div>
+          </div>
+          <div class="header-icons"><span>📹</span><span>📞</span><span>⋮</span></div>
+        </div>
+        <div class="chat-bg">
+          <div class="date-pill">TODAY</div>
+
+          <div class="bubble-wrap incoming">
+            <div class="bubble incoming">
+              Hi Mariana 😊 I'm LIA — I'll be by your side as you take care of your dad. Anything about his treatment, just ask.
+              <div class="bubble-time">8:00 <span>✓✓</span></div>
+            </div>
+          </div>
+
+          <div style="margin-top:6px;"></div>
+
+          <div class="bubble-wrap incoming">
+            <div class="bubble incoming">
+              Mariana, it's time for your dad's <strong>Metformin 500mg</strong> 💊<br><br>
+              Did he take it?
+              <div class="bubble-time">10:00 <span>✓✓</span></div>
+            </div>
+          </div>
+
+          <div class="quick-replies">
+            <button class="qr-btn selected">✅ Yes, he took it</button>
+            <button class="qr-btn" style="opacity:.45;">❌ No, he didn't</button>
+          </div>
+
+          <div style="margin-top:4px;"></div>
+
+          <div class="bubble-wrap outgoing">
+            <div class="bubble outgoing">
+              ✅ Yes, he took it
+              <div class="bubble-time outgoing">10:02 <span class="tick">✓✓</span></div>
+            </div>
+          </div>
+
+          <div class="bubble-wrap incoming">
+            <div class="bubble incoming">
+              Great, thanks Mariana ✅ All noted.<br><br>
+              I'll remind you tonight at <strong>8:00 PM</strong> for the next dose.
+              <div class="bubble-time">10:02 <span>✓✓</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="input-bar">
+          <div class="input-field">
+            <span>😊</span>
+            <span style="color:#aaa;font-size:13.5px;">Type a message</span>
+            <span style="margin-left:auto;">📎</span>
+          </div>
+          <div class="mic-btn">🎤</div>
+        </div>
+      </div>
+    </div>
+    <div class="label">2 — Confirmation logged</div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+backoffice/node_modules/
+whatsapp/node_modules/
+
+# Build outputs (assembled by CI)
+backoffice/dist/
+whatsapp/dist/
+
+# Misc
+.DS_Store
+*.local
+.superpowers/
+logs
+*.log
